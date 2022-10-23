@@ -13,6 +13,7 @@ model User {
   name       String?
   age        Int?
   verified   Boolean?  @default(false)
+  email      String?   @unique
 }
 
 model Todo {
