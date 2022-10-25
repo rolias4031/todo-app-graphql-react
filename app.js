@@ -1,24 +1,15 @@
-const { ApolloServer } = require('apollo-server-express');
-const { typeDefs } = require('./schema/TypeDefs');
-const { resolvers } = require('./schema/Resolvers');
+import { ApolloServer } from '@apollo/server';
+import { startStandaloneServer } from '@apollo/server/standalone';
+import { typeDefs } from './schema/TypeDefs.js';
+import { resolvers } from './schema/Resolvers.js';
 
-
-
-const express = require('express');
-const app = express();
-
-let server;
-async function startServer() {
-  server = new ApolloServer({
-    typeDefs,
-    resolvers,
-  });
-  await server.start();
-  server.applyMiddleware({ app });
-}
-
-startServer();
-
-app.listen({ port: 3001 }, () => {
-  console.log('Server running on port 3001');
+const app = new ApolloServer({
+  typeDefs,
+  resolvers,
 });
+
+const { url } = await startStandaloneServer(app, {
+  listen: { port: 3001 },
+});
+
+console.log(`Serving running at ${url}`);

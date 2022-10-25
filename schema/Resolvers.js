@@ -1,5 +1,5 @@
-const { prisma } = require('../lib/db');
-const resolvers = {
+import { prisma } from '../lib/db.js';
+export const resolvers = {
   Query: {
     getAllUsers() {
       return prisma.user.findMany();
@@ -8,6 +8,16 @@ const resolvers = {
       return prisma.user.findUnique({
         where: {
           email: args.email,
+        },
+      });
+    },
+    getAllTodos() {
+      return prisma.todo.findMany();
+    },
+    getTodo(parent, args) {
+      return prisma.todo.findUnique({
+        where: {
+          id: args.id,
         },
       });
     },
@@ -20,7 +30,10 @@ const resolvers = {
         data: args,
       });
     },
+    createTodo(parent, args) {
+      return prisma.todo.create({
+        data: args,
+      });
+    },
   },
 };
-
-module.exports = { resolvers };
