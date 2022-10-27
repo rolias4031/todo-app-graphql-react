@@ -1,4 +1,5 @@
 import { GraphQLInt8 } from 'graphql-type-ints';
+import { GraphQLError } from 'graphql';
 import { prisma } from '../lib/db.js';
 
 // * queries
@@ -28,6 +29,15 @@ const getTodo = async (_, args) => {
 
 // * mutations
 const createUser = async (_, args) => {
+  const exists = await prisma.user.findUnique({
+    where: {
+      email: args.email,
+    },
+  });
+  console.log(exists);
+  if (exists) {
+    throw new GraphQLError('email taken');
+  }
   return prisma.user.create({
     data: args,
   });
@@ -47,6 +57,13 @@ const editUser = async (_, args) => {
       email: args.email,
     },
     data: args,
+  });
+};
+const deleteUser = async (_, args) => {
+  return prisma.user.delete({
+    where: {
+      email: args.email,
+    },
   });
 };
 
@@ -102,6 +119,7 @@ export const resolvers = {
   Mutation: {
     createUser,
     editUser,
+    deleteUser,
     createTodo,
     editTodo,
     deleteTodo,
